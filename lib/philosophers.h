@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 13:25:03 by antonimo          #+#    #+#             */
-/*   Updated: 2024/12/13 14:02:23 by antonimo         ###   ########.fr       */
+/*   Updated: 2024/12/17 14:21:30 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,23 +21,30 @@
 # include <pthread.h>
 # include <stdbool.h>
 
+# define UINT_MAX 4294967295
+
 typedef struct s_params
 {
-	int	philos_num;
-	int	eat_times;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	time_to_die;
+	unsigned int	philos_num;
+	unsigned int	eat_times;
+	unsigned int	time_to_eat;
+	unsigned int	time_to_sleep;
+	unsigned int	time_to_die;
+	pthread_t		*philosophers;
 }	t_params;
 
 // parse.c
-bool	check_av(char **av, bool (*function)(void *));
-bool	is_number(void *param);
-bool	init_params(t_params *params, char **av);
-int		ft_atoi(char *str);
+bool			check_av(char **av, bool (*function)(void *));
+bool			init_params(t_params *params, int ac, char **av);
+unsigned int	*parse_values(int ac, char **av);
 
 // philosophers_utils.c
-void	ft_bzero(void *ptr, size_t n);
+bool	uint_limits(unsigned long num);
+bool	is_number(void *param);
+int		ft_atoi(char *str);
 
+
+// philosophers_treads.c
+/* void	life_cycle(t_params *params); */
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 11:41:52 by antonimo          #+#    #+#             */
-/*   Updated: 2024/12/13 14:05:25 by antonimo         ###   ########.fr       */
+/*   Updated: 2024/12/17 14:22:19 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,13 @@ int	main(int ac, char **av)
 
 	ac--;
 	av++;
-	if (ac == 5)
+	if (ac == 4 || ac == 5)
 	{
-		ft_bzero(&params, sizeof(t_params));
-		if (!init_params(&params, av))
+		memset(&params, 0, sizeof(t_params));
+		if (!init_params(&params, ac, av))
 			return (2);
-		printf("GUCCI\n");
+		/* life_cycle(&params); // probandolo aun */
+		printf("GUCCI\n"); // comprobación
 	}
 	else
 		printf("Error: invalid number of arguments\n");

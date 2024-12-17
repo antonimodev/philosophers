@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 13:18:53 by antonimo          #+#    #+#             */
-/*   Updated: 2024/12/13 13:52:09 by antonimo         ###   ########.fr       */
+/*   Updated: 2024/12/17 14:24:18 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,56 +23,44 @@ bool	check_av(char **av, bool (*function)(void *))
 	return (true);
 }
 
-bool	is_number(void *param)
+bool	init_params(t_params *params, int ac, char **av)
 {
-	char *str;
+	unsigned int	*values;
 
-	str = (char *)param;
-    while (*str)
-    {
-        if (*str < '0' || *str > '9')
-        {
-			printf("Error: is_number: Params must be numbers only!\n");
-			return (NULL);
-		}
-        str++;
-    }
-	return(true);
-}
-
-bool	init_params(t_params *params, char **av)
-{
-	if (!check_av(av, is_number))
+	values = parse_values(ac, av);
+	if (!check_av(av, is_number) || !values[0])
 		return (false);
-	params->philos_num = ft_atoi(av[0]);
-	params->eat_times = ft_atoi(av[1]);
-	params->time_to_eat = ft_atoi(av[2]);
-	params->time_to_sleep = ft_atoi(av[3]);
-	params->time_to_die = ft_atoi(av[4]);
+	else
+	{
+		params->philos_num = values[0];
+		params->time_to_die = values[1];
+		params->time_to_eat = values[2];
+		params->time_to_sleep = values[3];
+		if (ac == 5)
+			params->eat_times = values[4];
+	}
 	return(true);
 }
 
-int ft_atoi(char *str)
+unsigned int	*parse_values(int ac, char **av)
 {
-	int res;
-	int sign;
+	unsigned int	*values;
+	int				i;
 
-	if (!str)
-		return (0);
-	res = 0;
-	sign = 1;
-	while((*str >= 9 && *str <= 13) || *str == ' ')
-		str++;
-	if (*str == '-' || *str == '+')
+	values = malloc(ac * sizeof(unsigned int));
+	// proteger malloc, cuidao con lo que devuelve la funsion
+	i = 0;
+	while(av)
 	{
-		if (*str == '-')
-			sign = -1;
-		str++;
+		values[i] = ft_atoi(av[i]);
+		if (!values[i])
+		{
+			printf("Error: parse_values: Values cannot be 0\n");
+			memset(values, 0, ac * sizeof(unsigned int));
+			return (values);
+		}
+		i++;
+		av++;
 	}
-	while(*str >= '0' && *str <= '9')
-	{
-		res = res * 10 + *str -'0';
-		str++;
-	}
-	return (sign * res);
+	return (values);
 }

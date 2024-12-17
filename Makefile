@@ -1,7 +1,7 @@
 # Variables #
 NAME = philosophers
 CC = gcc
-CFLAGS = -Wall -Wextra -g
+CFLAGS = -Wall -Wextra -Werror -g
 RM = rm -rf
 
 # Libraries #
@@ -9,9 +9,10 @@ INC             = -I lib
 MAKE_LIB        = make --no-print-directory
 
 # Philosophers sources #
-PHILOSOPHER_SRC =	src/parse.c \
-                    src/philosophers.c \
-					src/philosophers_utils.c
+PHILOSOPHER_SRC =	philo/parse.c \
+                    philo/philosophers.c \
+					philo/philosophers_utils.c \
+
 # Philosophers objects #
 PHILOSOPHER_OBJ = $(addprefix obj/, $(PHILOSOPHER_SRC:.c=.o))
 
