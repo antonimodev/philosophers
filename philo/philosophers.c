@@ -14,8 +14,10 @@
 
 int	main(int ac, char **av)
 {
-	t_params params;
+	t_params	params;
+	// array de forks(tenedores)?
 
+	//init_mutex(array de forks, &params);
 	ac--;
 	av++;
 	if (ac == 4 || ac == 5)
@@ -29,4 +31,17 @@ int	main(int ac, char **av)
 	else
 		printf("Error: invalid number of arguments\n");
 	return (2);
+}
+bool	init_mutex(pthread_mutex_t *forks, int philos_num) // Aquí philos num es de la estructura de params
+{
+	int	i;
+
+	i = 0;
+	while (i < philos_num)
+	{
+		if (pthread_mutex_init(&forks[i], NULL) != 0) // el != 0 es por legibilidad, la funcion devuelve 0 en éxito
+			return (false); // aquí podríamos hacer printf para decir que los mutex no han podido inicializar correctamente
+		i++;
+	}
+	return (true);
 }
