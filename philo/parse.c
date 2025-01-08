@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 13:18:53 by antonimo          #+#    #+#             */
-/*   Updated: 2024/12/17 14:24:18 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/08 12:23:20 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,13 @@ bool	init_params(t_params *params, int ac, char **av)
 	unsigned int	*values;
 
 	values = parse_values(ac, av);
-	if (!check_av(av, is_number) || !values[0])
+	if (!check_av(av, is_number))
 		return (false);
+	if (!values[0])
+	{
+		free(values);
+		return (false);
+	}
 	else
 	{
 		params->philos_num = values[0];
@@ -48,7 +53,8 @@ unsigned int	*parse_values(int ac, char **av)
 	int				i;
 
 	values = malloc(ac * sizeof(unsigned int));
-	// proteger malloc, cuidao con lo que devuelve la funsion
+	if (!values)
+		return (NULL);
 	i = 0;
 	while(i < ac)
 	{

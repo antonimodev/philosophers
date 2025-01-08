@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 11:41:52 by antonimo          #+#    #+#             */
-/*   Updated: 2024/12/17 14:22:19 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/08 14:06:40 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 	{
 		memset(&params, 0, sizeof(t_params));
 		if (!init_params(&params, ac, av))
-			return (2);
+			return (2); // Return 2 represents error output
 		forks = malloc(params.philos_num * sizeof(pthread_mutex_t));
 		if (!forks || !init_mutex(forks, params.philos_num))
 		{
@@ -41,30 +41,30 @@
 
 int main(int ac, char **av)
 {
-    t_params params;
-    pthread_mutex_t *forks;
-    t_philosopher *philosophers;
-    unsigned int i;
+    t_params		params;
+    t_philosopher	*philosophers;
+    unsigned int	i;
 
+	i = 0;
     ac--;
     av++;
     if (ac == 4 || ac == 5)
     {
-        // Initialize parameters and mutexes
+		// Initialize t_params struct
         memset(&params, 0, sizeof(t_params));
         if (!init_params(&params, ac, av))
             return (2);
         
-        // Initialize forks (mutexes)
-        forks = malloc(params.philos_num * sizeof(pthread_mutex_t));
-        if (!forks || !init_mutex(forks, params.philos_num))
+        // Initialize FORKS (mutexes)
+        params.forks = malloc(params.philos_num * sizeof(pthread_mutex_t));
+		// If malloc or ft fails, it returns 2 (error)
+        if (!params.forks || !init_mutex(params.forks, params.philos_num))
         {
             printf("Error: Failed to initialize mutexes\n");
             return (2);
         }
-        params.forks = forks;
 
-        // Initialize print mutex
+        // Initialize PRINT mutex
         if (pthread_mutex_init(&params.print_mutex, NULL) != 0)
         {
             printf("Error: Failed to initialize print mutex\n");
@@ -80,14 +80,15 @@ int main(int ac, char **av)
         }
 
         // Initialize philosophers
-        for (i = 0; i < params.philos_num; i++)
+        while (i < params.philos_num)
         {
             philosophers[i].id = i + 1;
             philosophers[i].params = &params;
-            philosophers[i].left_fork = &forks[i];
-            philosophers[i].right_fork = &forks[(i + 1) % params.philos_num];
+            philosophers[i].left_fork = &params.forks[i];
+            philosophers[i].right_fork = &params.forks[(i + 1) % params.philos_num];
             philosophers[i].print_mutex = &params.print_mutex;
             philosophers[i].current_state = THINKING;
+			i++;
         }
 
         // Create threads for each philosopher
@@ -110,10 +111,9 @@ int main(int ac, char **av)
         // Cleanup
         for (i = 0; i < params.philos_num; i++)
         {
-            pthread_mutex_destroy(&forks[i]);
+            pthread_mutex_destroy(&params.forks[i]);
         }
         pthread_mutex_destroy(&params.print_mutex);
-        free(forks);
         free(philosophers);
         free(params.philosophers);
     }
@@ -125,7 +125,7 @@ int main(int ac, char **av)
     return (0);
 }
 
-
+// Función que inicializa un array de mutex, se podría hacer de propósito general
 bool	init_mutex(pthread_mutex_t *forks, int philos_num) // Aquí philos num es de la estructura de params
 {
 	int	i;

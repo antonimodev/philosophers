@@ -6,13 +6,13 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 13:17:00 by antonimo          #+#    #+#             */
-/*   Updated: 2024/12/17 14:09:10 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/08 12:40:04 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int ft_atoi(char *str)
+unsigned int ft_atoi(char *str)
 {
 	unsigned long res;
 	int sign;
@@ -51,7 +51,7 @@ bool	uint_limits(unsigned long num)
 
 bool	is_number(void *param)
 {
-	char *str;
+	char	*str;
 
 	str = (char *)param;
 	if (!*str)
