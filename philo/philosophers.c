@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 11:41:52 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/08 14:06:40 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/09 14:16:37 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@
 int main(int ac, char **av)
 {
     t_params		params;
-    t_philosopher	*philosophers;
+    t_philosopher	*philosophers; // no tiene memset
     unsigned int	i;
 
 	i = 0;
@@ -58,7 +58,7 @@ int main(int ac, char **av)
         // Initialize FORKS (mutexes)
         params.forks = malloc(params.philos_num * sizeof(pthread_mutex_t));
 		// If malloc or ft fails, it returns 2 (error)
-        if (!params.forks || !init_mutex(params.forks, params.philos_num))
+        if (!params.forks || !init_mutex(params.forks, params.philos_num)) // name to plural, 2nd param -> "num" instead
         {
             printf("Error: Failed to initialize mutexes\n");
             return (2);
@@ -82,10 +82,10 @@ int main(int ac, char **av)
         // Initialize philosophers
         while (i < params.philos_num)
         {
-            philosophers[i].id = i + 1;
+            philosophers[i].id = i + 1; // legibilidad, en lugar de filosofo 0, es filosofo 1
             philosophers[i].params = &params;
             philosophers[i].left_fork = &params.forks[i];
-            philosophers[i].right_fork = &params.forks[(i + 1) % params.philos_num];
+            philosophers[i].right_fork = &params.forks[(i + 1) % params.philos_num]; // el modulo es para que sea circular
             philosophers[i].print_mutex = &params.print_mutex;
             philosophers[i].current_state = THINKING;
 			i++;
@@ -93,19 +93,26 @@ int main(int ac, char **av)
 
         // Create threads for each philosopher
         params.philosophers = malloc(params.philos_num * sizeof(pthread_t));
-        for (i = 0; i < params.philos_num; i++)
+		/* if (!params.philosophers)
+			cuidao con liberar y return 2 */
+		i = 0;
+        while (i < params.philos_num)
         {
             if (pthread_create(&params.philosophers[i], NULL, philosopher_routine, &philosophers[i]) != 0)
             {
                 printf("Error: Failed to create thread for philosopher %d\n", i + 1);
                 return (2);
             }
+			i++;
         }
 
         // Wait for threads to finish
-        for (i = 0; i < params.philos_num; i++)
+		i = 0;
+        while (i < params.philos_num)
         {
-            pthread_join(params.philosophers[i], NULL);
+            pthread_join(params.philosophers[i], NULL); // el programa principal espera a que los hilos terminen, si no existiese
+														// esta funcion, el programa terminaria antes interrumpiendo los hilos
+			i++;
         }
 
         // Cleanup

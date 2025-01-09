@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 13:25:03 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/08 12:40:28 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/09 13:41:36 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ typedef struct s_params
 	unsigned int	philos_num;
 	unsigned int	eat_times;
 	unsigned int	time_to_eat;
-	unsigned int	time_to_sleep;
 	unsigned int	time_to_die;
+	unsigned int	time_to_sleep;
 	pthread_t		*philosophers;
 	pthread_mutex_t	*forks; // pa comer
 	pthread_mutex_t	print_mutex; // pa imprimi
@@ -49,7 +49,7 @@ typedef struct s_philosopher
     t_state         current_state;
     pthread_mutex_t *left_fork;
     pthread_mutex_t *right_fork;
-    pthread_mutex_t *print_mutex; // checkear si es necesario ya que esta en params
+    pthread_mutex_t *print_mutex; // turno de palabra
     t_params        *params;
 }   t_philosopher;
 
