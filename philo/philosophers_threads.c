@@ -12,13 +12,6 @@
 
 #include "philosophers.h"
 
-// pthread_create(&params->philosopher, NULL, life_cycle, params);
-
-/*REVISAR:
-- Recibe params para hacer el cálculo de si tiene tiempo para la acción correspondiente
-- Debería recibir la acción que corresponde para que pueda calcular en función de si es comer o dormir
-- No sé si el mutex debe ser utilizado para hacer este printf o ya es pasarse*/
-
 unsigned int    get_current_time_ms(void)
 {
     struct timeval current_time;
