@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 13:25:03 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/09 13:41:36 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:16:32 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_philosopher
 {
     unsigned int    id;
     unsigned int    last_meal_time;
+	unsigned int	death;
     t_state         current_state;
     pthread_mutex_t *left_fork;
     pthread_mutex_t *right_fork;

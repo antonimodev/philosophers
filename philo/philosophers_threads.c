@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 11:49:39 by antonimo          #+#    #+#             */
-/*   Updated: 2024/12/17 12:39:01 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:49:24 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ unsigned int    get_current_time_ms(void)
     struct timeval current_time;
     
     gettimeofday(&current_time, NULL);
-    return (current_time.tv_sec * 1000 + current_time.tv_usec / 1000);
+    return (current_time.tv_sec * 1000 + current_time.tv_usec / 1000); // operacion para trasnformar a ms
 }
 
 unsigned int    get_time_diff_ms(unsigned int start_time)
@@ -57,12 +57,14 @@ void    *philosopher_routine(void *arg)
     
     philo = (t_philosopher *)arg;
     update_last_meal_time(philo);
-    philo->current_state = THINKING;
-    
+/*     philo->current_state = THINKING; */
     while (1)
     {
-        if (check_death_time(philo))
+        if (check_death_time(philo)) // debe de comprobarse dentro de eating y sleeping
+        {
+            philo->death = 1;
             return (NULL);
+        }
         if (philo->current_state == EATING)
             eating(philo);
         else if (philo->current_state == SLEEPING)
@@ -78,10 +80,10 @@ void    eating(t_philosopher *philo)
     pthread_mutex_lock(philo->left_fork);
     pthread_mutex_lock(philo->right_fork);
     pthread_mutex_lock(philo->print_mutex);
-    printf("%u %u is eating\n", get_time_diff_ms(philo->last_meal_time), philo->id);
+    update_last_meal_time(philo);
+    printf("time: %u id: %u is eating\n", get_time_diff_ms(philo->last_meal_time), philo->id);
     pthread_mutex_unlock(philo->print_mutex);
     
-    update_last_meal_time(philo);
     usleep(philo->params->time_to_eat * 1000);
     
     pthread_mutex_unlock(philo->left_fork);
@@ -92,7 +94,7 @@ void    eating(t_philosopher *philo)
 void    sleeping(t_philosopher *philo)
 {
     pthread_mutex_lock(philo->print_mutex);
-    printf("%u %u is sleeping\n", philo->id);
+    printf("time: %u id: %u is sleeping\n", get_time_diff_ms(philo->last_meal_time), philo->id);
     pthread_mutex_unlock(philo->print_mutex);
     usleep(philo->params->time_to_sleep * 1000);
     philo->current_state = THINKING;
@@ -101,7 +103,7 @@ void    sleeping(t_philosopher *philo)
 void    thinking(t_philosopher *philo)
 {
     pthread_mutex_lock(philo->print_mutex);
-    printf("%u %u is thinking\n", philo->id);
+    printf("time: %u id: %u is thinking\n", philo->id);
     pthread_mutex_unlock(philo->print_mutex);
     philo->current_state = EATING;
 }

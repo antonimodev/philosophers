@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 11:41:52 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/09 14:16:37 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:25:10 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,13 +108,23 @@ int main(int ac, char **av)
 
         // Wait for threads to finish
 		i = 0;
-        while (i < params.philos_num)
+		while (1)
+		{
+			while (i < params.philos_num)
+			{
+				if (philosophers[i].death == 1)
+					return (NULL);
+				i++;
+			}
+			i = 0;
+		}
+        /* while (i < params.philos_num)
         {
             pthread_join(params.philosophers[i], NULL); // el programa principal espera a que los hilos terminen, si no existiese
 														// esta funcion, el programa terminaria antes interrumpiendo los hilos
 			i++;
         }
-
+ */
         // Cleanup
         for (i = 0; i < params.philos_num; i++)
         {
