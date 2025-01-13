@@ -49,6 +49,7 @@ typedef struct s_philosopher
     unsigned int    last_meal_time;
 	unsigned int	meals;
 	unsigned int	death;
+	unsigned int	elapsed_time;
     t_state         current_state;
     pthread_mutex_t *left_fork;
     pthread_mutex_t *right_fork;

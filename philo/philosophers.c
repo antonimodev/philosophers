@@ -88,6 +88,7 @@ int main(int ac, char **av)
             philosophers[i].right_fork = &params.forks[(i + 1) % params.philos_num]; // el modulo es para que sea circular
             philosophers[i].print_mutex = &params.print_mutex;
             philosophers[i].current_state = THINKING;
+            philosophers[i].elapsed_time = 0;
 			i++;
         }
 
@@ -113,7 +114,7 @@ int main(int ac, char **av)
 			while (i < params.philos_num)
 			{
 				if (philosophers[i].death == 1) //  || philosophers[i].meals == params.eat_times)
-					return (NULL);
+					return (NULL); // acordarse de que hay que liberar
 				i++;
 			}
 			i = 0;

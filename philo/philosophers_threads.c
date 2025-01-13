@@ -25,15 +25,26 @@ unsigned int    get_time_diff_ms(unsigned int start_time) // para los prints
     return (get_current_time_ms() - start_time);
 }
 
-bool	is_death(t_philosopher *philo, unsigned int action_time)
+bool    is_death(t_philosopher *philo, unsigned int action)
 {
     unsigned int time_diff;
+    unsigned int action_time;
+    unsigned int time_remaining;
 
-    time_diff = get_time_diff_ms(philo->last_meal_time);
-    if (time_diff >= philo->params->time_to_die)
+    if (action == EATING)
+        action_time = philo->params->time_to_eat;
+    else if (action == SLEEPING)
+        action_time = philo->params->time_to_sleep;
+    
+    time_diff = philo->elapsed_time;
+    
+    if (time_diff + action_time >= philo->params->time_to_die)
     {
+        time_remaining = philo->params->time_to_die - time_diff;
         pthread_mutex_lock(philo->print_mutex);
-        printf("elapsed time: %u id: %u died\n", time_diff, philo->id);
+        usleep(time_remaining * 1000); // Esperamos hasta el momento exacto de la muerte
+        printf("elapsed time: %u id: %u died\n", 
+               philo->elapsed_time, philo->id);
         philo->death = 1;
         pthread_mutex_unlock(philo->print_mutex);
         return (true);
@@ -47,16 +58,24 @@ void    *philosopher_routine(void *arg)
 
     philo = (t_philosopher *)arg;
     philo->last_meal_time = get_current_time_ms();
+    philo->params->timestamp = get_current_time_ms();
     while (1) // bucle infinito con philo->meals como condicion de salida
     {
+        philo->elapsed_time = get_time_diff_ms(philo->last_meal_time);
         if (philo->current_state == EATING)
 		{
+            if (is_death(philo, EATING))
+                break ;
 			eating(philo);
 			if (philo->meals == philo->params->eat_times)
 				break ; // salimos del bucle retornando null
 		}
         else if (philo->current_state == SLEEPING)
+        {
+            if(is_death(philo, SLEEPING))
+                break ;
 			sleeping(philo);
+        }
         else if (philo->current_state == THINKING)
             thinking(philo);
     }
@@ -65,24 +84,27 @@ void    *philosopher_routine(void *arg)
 
 void    eating(t_philosopher *philo)
 {
+    pthread_mutex_lock(philo->left_fork);
+    pthread_mutex_lock(philo->right_fork);
     pthread_mutex_lock(philo->print_mutex);
+    printf("time: %u id: %u has taken forks\n", get_time_diff_ms(philo->params->timestamp), philo->id);
+    printf("time: %u id: %u is eating\n", get_time_diff_ms(philo->params->timestamp), philo->id);
     philo->last_meal_time = get_current_time_ms();
-    printf("time: %u id: %u has taken a fork\n", get_time_diff_ms(philo->last_meal_time), philo->id);
-    printf("time: %u id: %u is eating\n", get_time_diff_ms(philo->last_meal_time), philo->id);
-	philo->meals++;
+    philo->elapsed_time = 0;
     pthread_mutex_unlock(philo->print_mutex);
-
     usleep(philo->params->time_to_eat * 1000);
-
     pthread_mutex_unlock(philo->left_fork);
     pthread_mutex_unlock(philo->right_fork);
+	philo->meals++;
+    /* philo->elapsed_time = get_time_diff_ms(philo->last_meal_time); */
     philo->current_state = SLEEPING;
 }
 
 void    sleeping(t_philosopher *philo)
 {
+    philo->elapsed_time = get_time_diff_ms(philo->last_meal_time);
     pthread_mutex_lock(philo->print_mutex);
-    printf("time: %u id: %u is sleeping\n", get_time_diff_ms(philo->last_meal_time), philo->id);
+    printf("time: %u id: %u is sleeping\n", get_time_diff_ms(philo->params->timestamp), philo->id);
     pthread_mutex_unlock(philo->print_mutex);
     usleep(philo->params->time_to_sleep * 1000);
     philo->current_state = THINKING;
@@ -91,7 +113,7 @@ void    sleeping(t_philosopher *philo)
 void    thinking(t_philosopher *philo)
 {
     pthread_mutex_lock(philo->print_mutex);
-    printf("time: %u id: %u is thinking\n", philo->id);
+    printf("time: %u id: %u is thinking\n", get_time_diff_ms(philo->params->timestamp), philo->id);
     pthread_mutex_unlock(philo->print_mutex);
     philo->current_state = EATING;
 }
