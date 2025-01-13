@@ -112,7 +112,7 @@ int main(int ac, char **av)
 		{
 			while (i < params.philos_num)
 			{
-				if (philosophers[i].death == 1)
+				if (philosophers[i].death == 1) //  || philosophers[i].meals == params.eat_times)
 					return (NULL);
 				i++;
 			}
