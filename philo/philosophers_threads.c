@@ -61,19 +61,24 @@ void    *philosopher_routine(void *arg)
     philo->params->timestamp = get_current_time_ms();
     while (1) // bucle infinito con philo->meals como condicion de salida
     {
-        philo->elapsed_time = get_time_diff_ms(philo->last_meal_time);
         if (philo->current_state == EATING)
 		{
-            if (is_death(philo, EATING))
+            printf("EATING --- Elapsed_time: %d, ID: %d\n", philo->elapsed_time, philo->id); // testing
+
+            if (philo->death) // si ha muerto salimos del bucle
                 break ;
+
 			eating(philo);
 			if (philo->meals == philo->params->eat_times)
 				break ; // salimos del bucle retornando null
 		}
         else if (philo->current_state == SLEEPING)
         {
-            if(is_death(philo, SLEEPING))
+            printf("SLEEPING --- Elapsed_time: %d, ID: %d\n", philo->elapsed_time, philo->id); // testing
+
+            if (philo->death) // si ha muerto salimos del bucle
                 break ;
+
 			sleeping(philo);
         }
         else if (philo->current_state == THINKING)
@@ -84,25 +89,29 @@ void    *philosopher_routine(void *arg)
 
 void    eating(t_philosopher *philo)
 {
+    philo->elapsed_time = get_time_diff_ms(philo->last_meal_time); // tiempo desde la ultima comida
+    if (is_death(philo, EATING))
+        return ;
     pthread_mutex_lock(philo->left_fork);
     pthread_mutex_lock(philo->right_fork);
     pthread_mutex_lock(philo->print_mutex);
     printf("time: %u id: %u has taken forks\n", get_time_diff_ms(philo->params->timestamp), philo->id);
-    printf("time: %u id: %u is eating\n", get_time_diff_ms(philo->params->timestamp), philo->id);
+    philo->elapsed_time = 0; // reiniciamos el tiempo ya que ha comido
     philo->last_meal_time = get_current_time_ms();
-    philo->elapsed_time = 0;
+    printf("time: %u id: %u is eating\n", get_time_diff_ms(philo->params->timestamp), philo->id);
+    usleep(philo->params->time_to_eat * 1000); // simulamos el tiempo de comer
     pthread_mutex_unlock(philo->print_mutex);
-    usleep(philo->params->time_to_eat * 1000);
     pthread_mutex_unlock(philo->left_fork);
     pthread_mutex_unlock(philo->right_fork);
-	philo->meals++;
-    /* philo->elapsed_time = get_time_diff_ms(philo->last_meal_time); */
+	philo->meals++; // incrementa el numero de comidas, tener en cuenta el salir del bucle en la rutina
     philo->current_state = SLEEPING;
 }
 
 void    sleeping(t_philosopher *philo)
 {
-    philo->elapsed_time = get_time_diff_ms(philo->last_meal_time);
+    philo->elapsed_time = get_time_diff_ms(philo->last_meal_time); // actualizamos el tiempo
+    if(is_death(philo, SLEEPING)) // comprobamos si muere en mitad de la acción
+        return ;
     pthread_mutex_lock(philo->print_mutex);
     printf("time: %u id: %u is sleeping\n", get_time_diff_ms(philo->params->timestamp), philo->id);
     pthread_mutex_unlock(philo->print_mutex);
