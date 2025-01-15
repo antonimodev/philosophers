@@ -42,7 +42,10 @@ bool	init_params(t_params *params, int ac, char **av)
 		params->time_to_eat = values[2];
 		params->time_to_sleep = values[3];
 		if (ac == 5)
+		{
 			params->eat_times = values[4];
+			params->eat_arg = true;
+		}
 	}
 	return(true);
 }

@@ -9,10 +9,16 @@ INC             = -I lib
 MAKE_LIB        = make --no-print-directory
 
 # Philosophers sources #
-PHILOSOPHER_SRC =	philo/parse.c \
-                    philo/philosophers.c \
-					philo/philosophers_utils.c \
-					philo/philosophers_threads.c \
+PHILOSOPHER_SRC =	actions/philosophers_actions_utils.c \
+					actions/philosophers_eat.c \
+					actions/philosophers_sleep.c \
+					actions/philosophers_think.c \
+					mutex/philosophers_mutex.c \
+					parse/philosophers_parse_utils.c \
+					parse/philosophers_parse.c \
+					src/philosophers_routine.c \
+					src/philosophers_time.c \
+					src/philosophers.c \
 
 # Philosophers objects #
 PHILOSOPHER_OBJ = $(addprefix obj/, $(PHILOSOPHER_SRC:.c=.o))

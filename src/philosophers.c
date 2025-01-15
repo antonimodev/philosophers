@@ -12,33 +12,6 @@
 
 #include "philosophers.h"
 
-/* int	main(int ac, char **av)
-{
-	t_params	params;
-	pthread_mutex_t *forks;
-
-	ac--;
-	av++;
-	if (ac == 4 || ac == 5)
-	{
-		memset(&params, 0, sizeof(t_params));
-		if (!init_params(&params, ac, av))
-			return (2); // Return 2 represents error output
-		forks = malloc(params.philos_num * sizeof(pthread_mutex_t));
-		if (!forks || !init_mutex(forks, params.philos_num))
-		{
-			printf("Error: Failed to initialize mutexes\n");
-			return (2);
-		}
-		params.forks = forks;
-		// life_cycle(&params); Uncomment when life_cycle is implemented
-		printf("GUCCI\n"); // comprobación
-	}
-	else
-		printf("Error: invalid number of arguments\n");
-	return (2);
-} */
-
 int main(int ac, char **av)
 {
     t_params		params;
@@ -82,16 +55,18 @@ int main(int ac, char **av)
         // Initialize philosophers
         while (i < params.philos_num)
         {
-            philosophers[i].id = i + 1; // legibilidad, en lugar de filosofo 0, es filosofo 1
+            philosophers[i].id = i + 1; // debe empezar en 1
             philosophers[i].params = &params;
             philosophers[i].left_fork = &params.forks[i];
             philosophers[i].right_fork = &params.forks[(i + 1) % params.philos_num]; // el modulo es para que sea circular
             philosophers[i].print_mutex = &params.print_mutex;
+            philosophers[i].death = 0;
+            philosophers[i].meals = 0;
             philosophers[i].elapsed_time = 0;
             if (philosophers[i].id % 2 == 0)
-                philosophers[i].current_state = SLEEPING;
+                philosophers[i].current_state = EATING;
             else
-                philosophers[i].current_state = THINKING;
+                philosophers[i].current_state = SLEEPING;
 			i++;
         }
 
@@ -102,7 +77,7 @@ int main(int ac, char **av)
 		i = 0;
         while (i < params.philos_num)
         {
-            if (pthread_create(&params.philosophers[i], NULL, philosopher_routine, &philosophers[i]) != 0)
+            if (pthread_create(&params.philosophers[i], NULL, routine, &philosophers[i]) != 0)
             {
                 printf("Error: Failed to create thread for philosopher %d\n", i + 1);
                 return (2);
@@ -144,19 +119,4 @@ int main(int ac, char **av)
         printf("Usage: %s number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n", av[-1]);
     }
     return (0);
-}
-
-// Función que inicializa un array de mutex, se podría hacer de propósito general
-bool	init_mutex(pthread_mutex_t *forks, int philos_num) // Aquí philos num es de la estructura de params
-{
-	int	i;
-
-	i = 0;
-	while (i < philos_num)
-	{
-		if (pthread_mutex_init(&forks[i], NULL) != 0) // el != 0 es por legibilidad, la funcion devuelve 0 en éxito
-			return (false); // aquí podríamos hacer printf para decir que los mutex no han podido inicializar correctamente
-		i++;
-	}
-	return (true);
 }

@@ -22,7 +22,7 @@ unsigned int    get_current_time_ms(void)
 
 unsigned int    get_time_diff_ms(unsigned int start_time) // para los prints
 {
-    return (get_current_time_ms() - start_time);
+    return (get_current_time() - start_time);
 }
 
 bool    is_death(t_philosopher *philo, unsigned int action)
@@ -72,7 +72,7 @@ void    *philosopher_routine(void *arg)
 			if (philo->meals == philo->params->eat_times)
 				break ; // salimos del bucle retornando null
 		}
-        else if (philo->current_state == SLEEPING)
+		else if (philo->current_state == SLEEPING)
         {
             printf("SLEEPING --- Elapsed_time: %d, ID: %d\n", philo->elapsed_time, philo->id); // testing
 
@@ -125,29 +125,4 @@ void    thinking(t_philosopher *philo)
     printf("time: %u id: %u is thinking\n", get_time_diff_ms(philo->params->timestamp), philo->id);
     pthread_mutex_unlock(philo->print_mutex);
     philo->current_state = EATING;
-}
-
-// Revisar si vale o no, tenemos array de mutex en struct params
-pthread_mutex_t *create_forks(unsigned int num_philos)
-{
-    pthread_mutex_t *forks;
-    unsigned int i;
-
-    forks = malloc(sizeof(pthread_mutex_t) * num_philos);
-    if (!forks)
-        return (NULL);
-
-    i = 0;
-    while (i < num_philos)
-    {
-        if (pthread_mutex_init(&forks[i], NULL) != 0)
-        {
-            while (i > 0)
-                pthread_mutex_destroy(&forks[--i]);
-            free(forks);
-            return (NULL);
-        }
-        i++;
-    }
-    return (forks);
 }
