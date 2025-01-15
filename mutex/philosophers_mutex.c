@@ -37,7 +37,7 @@ pthread_mutex_t *create_forks(unsigned int num_philos)
 }
 
 // Función que inicializa un array de mutex, se podría hacer de propósito general
-bool	init_mutex(pthread_mutex_t *forks, int philos_num) // Aquí philos num es de la estructura de params
+bool	init_mutex_array(pthread_mutex_t *forks, int philos_num) // Aquí philos num es de la estructura de params
 {
 	int	i;
 

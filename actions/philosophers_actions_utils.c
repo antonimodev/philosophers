@@ -16,18 +16,21 @@ void    print_status(t_philosopher *philo, unsigned int action)
 {
     // Es posible que aquí podamos poner el pthread_mutex_lock
     if (action == EATING)
-        printf("time: %u  ID: %u is eating\n", 
+        printf(BOLD COLOR_GREEN "%ums %u is eating\n" COLOR_RESET,
                 time_diff(philo->params->timestamp), philo->id);
     else if (action == SLEEPING)
-        printf("time: %u  ID: %u is sleeping\n", 
+        printf("%ums %u is sleeping\n", 
                 time_diff(philo->params->timestamp), philo->id);
     else if (action == THINKING)
-        printf("time: %u  ID: %u is thinking\n", 
+        printf("%ums %u is thinking\n", 
                 time_diff(philo->params->timestamp), philo->id);
     else if (action == FORK)
-        printf("time: %u  ID: %u has taken a fork\n", 
+        printf("%ums %u ha taken a fork\n", 
                 time_diff(philo->params->timestamp), philo->id);
     else if (action == DEAD)
-        printf("time: %u  ID: %u died\n", 
+        printf(COLOR_RED "%ums %u died\n" COLOR_RESET, 
                 time_diff(philo->params->timestamp), philo->id);
+    else if (action == FINISH)
+        printf(BOLD COLOR_BLUE "%ums  All philosophers have eaten %u times\n" COLOR_RESET, 
+                time_diff(philo->params->timestamp), philo->params->eat_times);
 }

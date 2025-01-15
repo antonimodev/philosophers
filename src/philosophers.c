@@ -15,102 +15,39 @@
 int main(int ac, char **av)
 {
     t_params		params;
-    t_philosopher	*philosophers; // no tiene memset
-    unsigned int	i;
+    t_philosopher	*philo; // no tiene memset
 
-	i = 0;
     ac--;
     av++;
     if (ac == 4 || ac == 5)
     {
-		// Initialize t_params struct
         memset(&params, 0, sizeof(t_params));
         if (!init_params(&params, ac, av))
             return (2);
-        
-        // Initialize FORKS (mutexes)
         params.forks = malloc(params.philos_num * sizeof(pthread_mutex_t));
-		// If malloc or ft fails, it returns 2 (error)
-        if (!params.forks || !init_mutex(params.forks, params.philos_num)) // name to plural, 2nd param -> "num" instead
+        if (!params.forks || !init_mutex_array(params.forks, params.philos_num))
         {
-            printf("Error: Failed to initialize mutexes\n");
+            free(params.forks);
+            printf("Error: Failed to initialize mutexes\n"); // revisar mensaje
             return (2);
         }
-
-        // Initialize PRINT mutex
-        if (pthread_mutex_init(&params.print_mutex, NULL) != 0)
-        {
-            printf("Error: Failed to initialize print mutex\n");
+        init_mutex(&params.print_mutex);
+        if (!init_philosophers_array(&params, &philo)) // lleva malloc
             return (2);
-        }
-
-        // Create philosophers
-        philosophers = malloc(params.philos_num * sizeof(t_philosopher));
-        if (!philosophers)
-        {
-            printf("Error: Failed to allocate philosophers\n");
-            return (2);
-        }
-
-        // Initialize philosophers
-        while (i < params.philos_num)
-        {
-            philosophers[i].id = i + 1; // debe empezar en 1
-            philosophers[i].params = &params;
-            philosophers[i].left_fork = &params.forks[i];
-            philosophers[i].right_fork = &params.forks[(i + 1) % params.philos_num]; // el modulo es para que sea circular
-            philosophers[i].print_mutex = &params.print_mutex;
-            philosophers[i].death = 0;
-            philosophers[i].meals = 0;
-            philosophers[i].elapsed_time = 0;
-            if (philosophers[i].id % 2 == 0)
-                philosophers[i].current_state = EATING;
-            else
-                philosophers[i].current_state = SLEEPING;
-			i++;
-        }
-
-        // Create threads for each philosopher
+        init_philosophers(&params, philo);
         params.philosophers = malloc(params.philos_num * sizeof(pthread_t));
-		/* if (!params.philosophers)
-			cuidao con liberar y return 2 */
-		i = 0;
-        while (i < params.philos_num)
+		if (!params.philosophers)
         {
-            if (pthread_create(&params.philosophers[i], NULL, routine, &philosophers[i]) != 0)
-            {
-                printf("Error: Failed to create thread for philosopher %d\n", i + 1);
-                return (2);
-            }
-			i++;
+            free(params.forks);
+            free(philo);
+			return(2); // hay que liberar tambien creo
         }
-
-        // Wait for threads to finish
-		i = 0;
-		while (1)
-		{
-			while (i < params.philos_num)
-			{
-				if (philosophers[i].death == 1) //  || philosophers[i].meals == params.eat_times)
-					return (2); // acordarse de que hay que liberar
-				i++;
-			}
-			i = 0;
-		}
-        /* while (i < params.philos_num)
-        {
-            pthread_join(params.philosophers[i], NULL); // el programa principal espera a que los hilos terminen, si no existiese
-														// esta funcion, el programa terminaria antes interrumpiendo los hilos
-			i++;
-        }
- */
+        if (!start_routine(&params, philo))
+            return (2);
+        pthread_join(params.monitor, NULL);
         // Cleanup
-        for (i = 0; i < params.philos_num; i++)
-        {
-            pthread_mutex_destroy(&params.forks[i]);
-        }
-        pthread_mutex_destroy(&params.print_mutex);
-        free(philosophers);
+        destroy_mutex(&params);
+        free(philo);
         free(params.philosophers);
     }
     else
@@ -119,4 +56,85 @@ int main(int ac, char **av)
         printf("Usage: %s number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n", av[-1]);
     }
     return (0);
+}
+
+void    init_philosophers(t_params *params, t_philosopher *philo)
+{
+    unsigned int i;
+
+    i = 0;
+    while (i < params->philos_num)
+    {
+        philo[i].id = i + 1; // debe empezar en 1
+        philo[i].params = params;
+        philo[i].left_fork = &params->forks[i];
+        philo[i].right_fork = &params->forks[(i + 1) % params->philos_num]; // el modulo es para que sea circular
+        philo[i].print_mutex = &params->print_mutex;
+        philo[i].meals = 0;
+        philo[i].elapsed_time = 0;
+        philo[i].last_meal_time = current_time();
+        if (philo[i].id % 2 == 0)
+            philo[i].current_state = EATING;
+        else
+            philo[i].current_state = SLEEPING;
+        i++;
+    }
+}
+
+bool    init_mutex(pthread_mutex_t *mutex) // general pero inicializa print_mutex
+{
+    if (pthread_mutex_init(mutex, NULL) != 0)
+    {
+        printf("Error: Failed to initialize mutex\n"); // revisar mensaje
+        return (false);
+    }
+    return (true);
+}
+
+bool    init_philosophers_array(t_params *params, t_philosopher **philo)
+{
+    *philo = malloc(params->philos_num * sizeof(t_philosopher));
+    if (!*philo)
+    {
+        printf("Error: Failed to allocate memory for philosophers\n"); // revisar mensaje
+        return (false);
+    }
+    return (true);
+}
+
+bool    start_routine(t_params *params, t_philosopher *philo) // empieza los hilos
+{
+    unsigned int i;
+
+    i = 0;
+    // Create threads for philosophers
+    while (i < params->philos_num)
+    {
+        if (pthread_create(&params->philosophers[i], NULL, routine, &philo[i]) != 0)
+        {
+            printf("Error: Failed to create thread for routine %d\n", i + 1);
+            return (false);
+        }
+        i++;
+    }
+    // Create thread for monitor
+    if (pthread_create(&params->monitor, NULL, monitor, philo) != 0)
+    {
+        printf("Error: Failed to create thread for monitor\n");
+        return (false);
+    }
+    return (true);
+}
+
+void    destroy_mutex(t_params *params)
+{
+    unsigned int i;
+
+    i = 0;
+    while (i < params->philos_num)
+    {
+        pthread_mutex_destroy(&params->forks[i]);
+        i++;
+    }
+    pthread_mutex_destroy(&params->print_mutex);
 }

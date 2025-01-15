@@ -12,7 +12,7 @@
 
 #include "philosophers.h"
 
-unsigned int    get_current_time_ms(void)
+/* unsigned int    get_current_time_ms(void)
 {
     struct timeval current_time;
 
@@ -126,3 +126,4 @@ void    thinking(t_philosopher *philo)
     pthread_mutex_unlock(philo->print_mutex);
     philo->current_state = EATING;
 }
+ */

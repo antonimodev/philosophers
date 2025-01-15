@@ -37,6 +37,7 @@ void    eat(t_philosopher *philo)
     pthread_mutex_lock(philo->print_mutex);
     print_status(philo, EATING);
     pthread_mutex_unlock(philo->print_mutex);
+    usleep(philo->params->time_to_eat * 1000);
 }
 
 void    drop_forks(t_philosopher *philo)

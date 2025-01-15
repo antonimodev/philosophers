@@ -19,6 +19,7 @@ PHILOSOPHER_SRC =	actions/philosophers_actions_utils.c \
 					src/philosophers_routine.c \
 					src/philosophers_time.c \
 					src/philosophers.c \
+					src/philosophers_monitor.c \
 
 # Philosophers objects #
 PHILOSOPHER_OBJ = $(addprefix obj/, $(PHILOSOPHER_SRC:.c=.o))

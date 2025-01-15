@@ -19,10 +19,12 @@ void    *routine(void *arg)
     philo = (t_philosopher *)arg;
     philo->last_meal_time = current_time();
     philo->params->timestamp = philo->last_meal_time;
-    while (1)
+    while (!philo->params->dead)
     {
         if (philo->current_state == EATING)
         {
+            if (philo->params->philos_num == 1)
+                usleep(philo->params->time_to_die * 1000); // revisar
             eating(philo);
             if (philo->params->eat_arg &&
                 philo->meals == philo->params->eat_times)
