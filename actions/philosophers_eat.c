@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers_threads.c                             :+:      :+:    :+:   */
+/*   philosophers_eat.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 11:49:39 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/10 14:49:24 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/16 14:22:54 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@ void    eating(t_philosopher *philo)
 
 void    take_forks(t_philosopher *philo)
 {
+    // es posible que tengamos que añadir una condicion
+    // para que los forks se cojan por grupos, es decir;
+    // impares cogen izquierdo, pares cogen drcho.
     pthread_mutex_lock(philo->left_fork);
     pthread_mutex_lock(philo->right_fork);
     pthread_mutex_lock(philo->print_mutex);

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers_threads.c                             :+:      :+:    :+:   */
+/*   philosophers_routine.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 11:49:39 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/10 14:49:24 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/16 13:19:17 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,6 @@ void    *routine(void *arg)
             if (philo->params->eat_arg &&
                 philo->meals == philo->params->eat_times)
                 break ;
-            if (philo->id % 2 == 0)
-                usleep(1000);
         }
         else if (philo->current_state == SLEEPING)
             sleeping(philo);
