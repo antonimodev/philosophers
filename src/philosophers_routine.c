@@ -29,6 +29,8 @@ void    *routine(void *arg)
             if (philo->params->eat_arg &&
                 philo->meals == philo->params->eat_times)
                 break ;
+            if (philo->id % 2 == 0)
+                usleep(1000);
         }
         else if (philo->current_state == SLEEPING)
             sleeping(philo);

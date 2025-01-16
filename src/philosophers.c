@@ -15,7 +15,7 @@
 int main(int ac, char **av)
 {
     t_params		params;
-    t_philosopher	*philo; // no tiene memset
+    t_philosopher	*philo;
 
     ac--;
     av++;
@@ -24,17 +24,21 @@ int main(int ac, char **av)
         memset(&params, 0, sizeof(t_params));
         if (!init_params(&params, ac, av))
             return (2);
-        params.forks = malloc(params.philos_num * sizeof(pthread_mutex_t));
+        params.forks = malloc(params.philos_num * sizeof(pthread_mutex_t)); // malloc para forks
         if (!params.forks || !init_mutex_array(params.forks, params.philos_num))
         {
             free(params.forks);
             printf("Error: Failed to initialize mutexes\n"); // revisar mensaje
             return (2);
         }
+
         init_mutex(&params.print_mutex);
-        if (!init_philosophers_array(&params, &philo)) // lleva malloc
+
+        if (!malloc_philosophers_array(&params, &philo))
             return (2);
+
         init_philosophers(&params, philo);
+
         params.philosophers = malloc(params.philos_num * sizeof(pthread_t));
 		if (!params.philosophers)
         {
@@ -42,13 +46,13 @@ int main(int ac, char **av)
             free(philo);
 			return(2); // hay que liberar tambien creo
         }
+
         if (!start_routine(&params, philo))
             return (2);
+
         pthread_join(params.monitor, NULL);
-        // Cleanup
-        destroy_mutex(&params);
-        free(philo);
-        free(params.philosophers);
+        cleanup(&params, philo);
+
     }
     else
     {
@@ -65,10 +69,10 @@ void    init_philosophers(t_params *params, t_philosopher *philo)
     i = 0;
     while (i < params->philos_num)
     {
-        philo[i].id = i + 1; // debe empezar en 1
+        philo[i].id = i + 1;
         philo[i].params = params;
         philo[i].left_fork = &params->forks[i];
-        philo[i].right_fork = &params->forks[(i + 1) % params->philos_num]; // el modulo es para que sea circular
+        philo[i].right_fork = &params->forks[(i + 1) % params->philos_num];
         philo[i].print_mutex = &params->print_mutex;
         philo[i].meals = 0;
         philo[i].elapsed_time = 0;
@@ -91,7 +95,7 @@ bool    init_mutex(pthread_mutex_t *mutex) // general pero inicializa print_mute
     return (true);
 }
 
-bool    init_philosophers_array(t_params *params, t_philosopher **philo)
+bool    malloc_philosophers_array(t_params *params, t_philosopher **philo)
 {
     *philo = malloc(params->philos_num * sizeof(t_philosopher));
     if (!*philo)
@@ -137,4 +141,12 @@ void    destroy_mutex(t_params *params)
         i++;
     }
     pthread_mutex_destroy(&params->print_mutex);
+}
+
+void cleanup(t_params *params, t_philosopher *philo)
+{
+    destroy_mutex(params);
+    free(philo);
+    free(params->philosophers);
+    free(params->forks);
 }

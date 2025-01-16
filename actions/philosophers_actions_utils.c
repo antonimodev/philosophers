@@ -25,7 +25,7 @@ void    print_status(t_philosopher *philo, unsigned int action)
         printf("%ums %u is thinking\n", 
                 time_diff(philo->params->timestamp), philo->id);
     else if (action == FORK)
-        printf("%ums %u ha taken a fork\n", 
+        printf("%ums %u has taken a fork\n", 
                 time_diff(philo->params->timestamp), philo->id);
     else if (action == DEAD)
         printf(COLOR_RED "%ums %u died\n" COLOR_RESET, 

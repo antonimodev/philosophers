@@ -120,9 +120,10 @@ bool			is_death(t_philosopher *philo);
 // ---------------------- MAIN ---------------------- // habra que ponerlo en otro archivo, no en main
 // philosophers.c
 void			init_philosophers(t_params *params, t_philosopher *philo);
-bool			init_philosophers_array(t_params *params, t_philosopher **philo);
+bool			malloc_philosophers_array(t_params *params, t_philosopher **philo);
 bool			start_routine(t_params *params, t_philosopher *philo);
 bool			init_mutex(pthread_mutex_t *mutex);
 void			destroy_mutex(t_params *params);
+void			cleanup(t_params *params, t_philosopher *philo);
 
 #endif
