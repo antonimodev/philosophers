@@ -24,5 +24,4 @@ void    rest(t_philosopher *philo)
     print_status(philo, SLEEPING);
     pthread_mutex_unlock(philo->print_mutex);
     usleep(philo->params->time_to_sleep * 1000);
-    philo->elapsed_time = time_diff(philo->last_meal_time); // actualizamos el tiempo
 }

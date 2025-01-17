@@ -24,35 +24,23 @@ int main(int ac, char **av)
         memset(&params, 0, sizeof(t_params));
         if (!init_params(&params, ac, av))
             return (2);
-        params.forks = malloc(params.philos_num * sizeof(pthread_mutex_t)); // malloc para forks
-        if (!params.forks || !init_mutex_array(params.forks, params.philos_num))
-        {
-            free(params.forks);
-            printf("Error: Failed to initialize mutexes\n"); // revisar mensaje
+        if (!init_forks(&params))
             return (2);
-        }
-
-        init_mutex(&params.print_mutex);
-
+        init_mutex(&params.print_mutex); // Hay que proteger
         if (!malloc_philosophers_array(&params, &philo))
             return (2);
-
         init_philosophers(&params, philo);
-
-        params.philosophers = malloc(params.philos_num * sizeof(pthread_t));
+        params.philosophers = malloc(params.philos_num * sizeof(pthread_t)); // Modularize
 		if (!params.philosophers)
         {
             free(params.forks);
             free(philo);
 			return(2); // hay que liberar tambien creo
         }
-
         if (!start_routine(&params, philo))
             return (2);
-
-        pthread_join(params.monitor, NULL);
+        wait_threads(&params); // puede que lo metamos en cleanup
         cleanup(&params, philo);
-
     }
     else
     {
@@ -60,6 +48,19 @@ int main(int ac, char **av)
         printf("Usage: %s number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n", av[-1]);
     }
     return (0);
+}
+
+void    wait_threads(t_params *params)
+{
+    unsigned int i;
+
+    i = 0;
+    pthread_join(params->monitor, NULL);
+    while (i < params->philos_num)
+    {
+        pthread_join(params->philosophers[i], NULL);
+        i++;
+    }
 }
 
 void    init_philosophers(t_params *params, t_philosopher *philo)
@@ -75,7 +76,6 @@ void    init_philosophers(t_params *params, t_philosopher *philo)
         philo[i].right_fork = &params->forks[(i + 1) % params->philos_num];
         philo[i].print_mutex = &params->print_mutex;
         philo[i].meals = 0;
-        philo[i].elapsed_time = 0;
         philo[i].last_meal_time = current_time();
         if (philo[i].id % 2 == 0)
             philo[i].current_state = EATING;
@@ -114,7 +114,7 @@ bool    start_routine(t_params *params, t_philosopher *philo) // empieza los hil
     // Create threads for philosophers
     while (i < params->philos_num)
     {
-        if (pthread_create(&params->philosophers[i], NULL, routine, &philo[i]) != 0)
+        if (pthread_create(&params->philosophers[i], NULL, routine, &philo[i]) != 0) // revisar si se puede modularizar
         {
             printf("Error: Failed to create thread for routine %d\n", i + 1);
             return (false);
@@ -149,4 +149,17 @@ void cleanup(t_params *params, t_philosopher *philo)
     free(philo);
     free(params->philosophers);
     free(params->forks);
+}
+
+bool    init_forks(t_params *params)
+{
+    params->forks = malloc(params->philos_num * sizeof(pthread_mutex_t)); // Malloc for forks
+    if (!params->forks || !init_mutex_array(params->forks, params->philos_num)) // Init forks mutexes
+    {
+        free(params->forks);
+        printf("Error: Failed to initialize mutexes\n");
+         // Check message
+        return (false);
+    }
+    return (true);
 }

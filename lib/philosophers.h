@@ -45,9 +45,8 @@ typedef struct s_params
 	unsigned int	time_to_eat; // NECESARIO
 	unsigned int	time_to_sleep; // NECESARIO
 	unsigned int	time_to_die; // NECESARIO
-	unsigned int	dead; // NECESARIO PARA SABER SI HA MUERTO UN FILOSOFO -- Plantemiento de sustituir death por finish
 	unsigned int	eat_times; // NECESARIO PARA ARG OPCIONAL
-	bool			eat_arg; // NECESARIO PARA AUMENTAR MEALS
+	bool			dead; // NECESARIO PARA SABER SI HA MUERTO
 	pthread_t		monitor; // NECESARIO PARA CREAR EL HILO MONITOR - Pendiente
 	pthread_t		*philosophers; // NECESARIO PARA CREAR LOS HILOS
 	pthread_mutex_t	*forks; // NECESARIO, ARRAY DE TENEDORES (MUTEX)
@@ -59,7 +58,6 @@ typedef struct s_philosopher
     unsigned int    id; // NECESARIO PARA IDENTIFICAR CADA FILOSOFO
     unsigned int    last_meal_time; // NECESARIO PARA CONTABILIZAR EN FORMATO 00:00:00
 	unsigned int	meals; // NECESARIO PARA CONTABILIZAR LAS COMIDAS
-	unsigned int	elapsed_time; // NECESARIO PARA CONTABILIZAR EL TIEMPO TRANSCURRIDO
     t_state         current_state; // NECESARIO PARA CAMBIAR LOS ESTADOS EN LA RUTINA
     pthread_mutex_t *left_fork; // NECESARIO, APUNTA AL ARRAY DE FORKS DE PARAMS
     pthread_mutex_t *right_fork; // NECESARIO, APUNTA AL ARRAY DE FORKS DE PARAMS
@@ -125,5 +123,7 @@ bool			start_routine(t_params *params, t_philosopher *philo);
 bool			init_mutex(pthread_mutex_t *mutex);
 void			destroy_mutex(t_params *params);
 void			cleanup(t_params *params, t_philosopher *philo);
+bool			init_forks(t_params *params);
+void			wait_threads(t_params *params);
 
 #endif

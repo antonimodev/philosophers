@@ -23,11 +23,16 @@ void    eating(t_philosopher *philo)
 
 void    take_forks(t_philosopher *philo)
 {
-    // es posible que tengamos que añadir una condicion
-    // para que los forks se cojan por grupos, es decir;
-    // impares cogen izquierdo, pares cogen drcho.
-    pthread_mutex_lock(philo->left_fork);
-    pthread_mutex_lock(philo->right_fork);
+    if (philo->id % 2 == 0)
+    {
+        pthread_mutex_lock(philo->right_fork);
+        pthread_mutex_lock(philo->left_fork);
+    }
+    else if (philo->id % 2 != 0)
+    {
+        pthread_mutex_lock(philo->left_fork);
+        pthread_mutex_lock(philo->right_fork);
+    }
     pthread_mutex_lock(philo->print_mutex);
     print_status(philo, FORK);
     pthread_mutex_unlock(philo->print_mutex);
@@ -36,7 +41,6 @@ void    take_forks(t_philosopher *philo)
 void    eat(t_philosopher *philo)
 {
     philo->last_meal_time = current_time();
-    philo->elapsed_time = 0;
     pthread_mutex_lock(philo->print_mutex);
     print_status(philo, EATING);
     pthread_mutex_unlock(philo->print_mutex);
@@ -45,13 +49,20 @@ void    eat(t_philosopher *philo)
 
 void    drop_forks(t_philosopher *philo)
 {
-    pthread_mutex_unlock(philo->left_fork);
-    pthread_mutex_unlock(philo->right_fork);
-    philo->elapsed_time = time_diff(philo->last_meal_time);
+    if (philo->id % 2 == 0)
+    {
+        pthread_mutex_unlock(philo->right_fork);
+        pthread_mutex_unlock(philo->left_fork);
+    }
+    else if (philo->id % 2 != 0)
+    {
+        pthread_mutex_unlock(philo->left_fork);
+        pthread_mutex_unlock(philo->right_fork);
+    }
 }
 
 void meal_count(t_philosopher *philo)
 {
-    if (philo->params->eat_arg)
+    if (philo->params->eat_times)
         philo->meals++;
 }

@@ -1,7 +1,8 @@
 # Variables #
 NAME = philosophers
 CC = gcc
-CFLAGS = -Wall -Wextra -g -pthread #-Werror
+CFLAGS = -Wall -Wextra -Werror -g -pthread
+SANITIZE = -fsanitize=thread -pie
 RM = rm -rf
 
 # Libraries #
@@ -28,10 +29,10 @@ all: $(NAME)
 
 obj/%.o: %.c
 	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
+	@$(CC) $(CFLAGS) $(SANITIZE) $(INC) -c $< -o $@
 
 $(NAME): $(PHILOSOPHER_OBJ)
-	@$(CC) $(CFLAGS) -o $(NAME) $(PHILOSOPHER_OBJ)
+	@$(CC) $(CFLAGS) $(SANITIZE) -o $(NAME) $(PHILOSOPHER_OBJ)
 	@echo "$(NAME) created!"
 
 clean:

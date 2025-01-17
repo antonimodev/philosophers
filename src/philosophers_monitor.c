@@ -29,7 +29,7 @@ bool	meals_done(t_philosopher *philo)
 {
 	unsigned int	i;
 
-	if (!philo->params->eat_arg)
+	if (!philo->params->eat_times)
 		return (false);
 	i = 0;
 	while (i < philo->params->philos_num)
@@ -50,14 +50,13 @@ bool	is_death(t_philosopher *philo)
 	i = 0;
 	while (i < philo->params->philos_num)
 		{
-			new_time = philo[i].elapsed_time; // toma de referencia el tiempo transcurrido del filosofo
 			new_time = time_diff(philo[i].last_meal_time); // calculamos el tiempo transcurrido desde la ultima comida
 			if (new_time >= philo[i].params->time_to_die)
 			{
-				philo->params->dead = 1;
+				philo[i].params->dead = true;
 				pthread_mutex_lock(philo[i].print_mutex);
 				print_status(&philo[i], DEAD);
-				pthread_mutex_unlock(philo[i].print_mutex); // revisar si desbloquear aqui
+				pthread_mutex_unlock(philo[i].print_mutex);
 				return (true);
 			}
 			i++;
