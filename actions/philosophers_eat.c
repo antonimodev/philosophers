@@ -6,13 +6,13 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 11:49:39 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/16 14:22:54 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/17 14:24:29 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void    eating(t_philosopher *philo)
+void    eating(t_philo *philo)
 {
 	take_forks(philo);
 	eat(philo);
@@ -21,7 +21,7 @@ void    eating(t_philosopher *philo)
     philo->current_state = SLEEPING;
 }
 
-void    take_forks(t_philosopher *philo)
+void    take_forks(t_philo *philo)
 {
     if (philo->id % 2 == 0)
     {
@@ -38,16 +38,16 @@ void    take_forks(t_philosopher *philo)
     pthread_mutex_unlock(philo->print_mutex);
 }
 
-void    eat(t_philosopher *philo)
+void    eat(t_philo *philo)
 {
     philo->last_meal_time = current_time();
     pthread_mutex_lock(philo->print_mutex);
     print_status(philo, EATING);
     pthread_mutex_unlock(philo->print_mutex);
-    usleep(philo->params->time_to_eat * 1000);
+    usleep(philo->args.time_to_eat * 1000);
 }
 
-void    drop_forks(t_philosopher *philo)
+void    drop_forks(t_philo *philo)
 {
     if (philo->id % 2 == 0)
     {
@@ -61,8 +61,8 @@ void    drop_forks(t_philosopher *philo)
     }
 }
 
-void meal_count(t_philosopher *philo)
+void meal_count(t_philo *philo)
 {
-    if (philo->params->eat_times)
+    if (philo->args.eat_times)
         philo->meals++;
 }

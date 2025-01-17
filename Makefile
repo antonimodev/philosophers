@@ -1,7 +1,7 @@
 # Variables #
 NAME = philosophers
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g -pthread
+CFLAGS = -Wall -Wextra -g -pthread # -Werror
 SANITIZE = -fsanitize=thread -pie
 RM = rm -rf
 
@@ -21,6 +21,8 @@ PHILOSOPHER_SRC =	actions/philosophers_actions_utils.c \
 					src/philosophers_time.c \
 					src/philosophers.c \
 					src/philosophers_monitor.c \
+					src/philosophers_initialization.c \
+					src/philosophers_malloc.c
 
 # Philosophers objects #
 PHILOSOPHER_OBJ = $(addprefix obj/, $(PHILOSOPHER_SRC:.c=.o))

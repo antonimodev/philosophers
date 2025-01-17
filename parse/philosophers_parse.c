@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse.c                                            :+:      :+:    :+:   */
+/*   philosophers_parse.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 13:18:53 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/10 13:14:03 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/17 13:36:22 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,11 @@ bool	check_av(char **av, bool (*function)(void *))
 	return (true);
 }
 
-bool	init_params(t_params *params, int ac, char **av)
+bool	init_args(t_args *args, int ac, char **av)
 {
 	unsigned int	*values;
 
+	memset(args, 0, sizeof(t_args)); // Inicializamos la estructura
 	values = parse_values(ac, av);
 	if (!check_av(av, is_number))
 		return (false);
@@ -37,12 +38,12 @@ bool	init_params(t_params *params, int ac, char **av)
 	}
 	else
 	{
-		params->philos_num = values[0];
-		params->time_to_die = values[1];
-		params->time_to_eat = values[2];
-		params->time_to_sleep = values[3];
+		args->philos_num = values[0];
+		args->time_to_die = values[1];
+		args->time_to_eat = values[2];
+		args->time_to_sleep = values[3];
 		if (ac == 5)
-			params->eat_times = values[4];
+			args->eat_times = values[4];
 	}
 	return(true);
 }

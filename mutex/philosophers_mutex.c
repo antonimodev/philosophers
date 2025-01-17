@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers_threads.c                             :+:      :+:    :+:   */
+/*   philosophers_mutex.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 11:49:39 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/10 14:49:24 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/17 14:40:14 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ pthread_mutex_t *create_forks(unsigned int num_philos)
 }
 
 // Función que inicializa un array de mutex, se podría hacer de propósito general
-bool	init_mutex_array(pthread_mutex_t *forks, int philos_num) // Aquí philos num es de la estructura de params
+bool	init_mutex_array(pthread_mutex_t *forks, unsigned int philos_num) // Aquí philos num es de la estructura de params
 {
-	int	i;
+	unsigned int	i;
 
 	i = 0;
 	while (i < philos_num)
@@ -49,4 +49,27 @@ bool	init_mutex_array(pthread_mutex_t *forks, int philos_num) // Aquí philos nu
 		i++;
 	}
 	return (true);
+}
+
+bool    init_print_mutex(pthread_mutex_t *mutex) // general pero inicializa print_mutex
+{
+    if (pthread_mutex_init(mutex, NULL) != 0)
+    {
+        printf("Error: Failed to initialize mutex\n"); // revisar mensaje
+        return (false);
+    }
+    return (true);
+}
+
+void    destroy_mutex(t_params *params, t_args *args)
+{
+    unsigned int i;
+
+    i = 0;
+    while (i < args->philos_num)
+    {
+        pthread_mutex_destroy(&params->forks[i]);
+        i++;
+    }
+    pthread_mutex_destroy(&params->print_mutex);
 }

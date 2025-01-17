@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers_threads.c                             :+:      :+:    :+:   */
+/*   philosophers_monitor.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 11:49:39 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/10 14:49:24 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/17 14:18:04 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void	*monitor(void *arg)
 {
-	t_philosopher	*philo;
+	t_philo	*philo;
 
-	philo = (t_philosopher *)arg;
+	philo = (t_philo *)arg;
 	while (1)
 	{
 		if (is_death(philo) || meals_done(philo))
@@ -25,16 +25,16 @@ void	*monitor(void *arg)
 	return (NULL);
 }
 
-bool	meals_done(t_philosopher *philo)
+bool	meals_done(t_philo *philo)
 {
 	unsigned int	i;
 
-	if (!philo->params->eat_times)
+	if (!philo->args.eat_times)
 		return (false);
 	i = 0;
-	while (i < philo->params->philos_num)
+	while (i < philo->args.philos_num)
 	{
-		if (philo[i].meals < philo->params->eat_times)
+		if (philo[i].meals < philo->args.eat_times)
 			return (false);
 		i++;
 	}
@@ -42,16 +42,16 @@ bool	meals_done(t_philosopher *philo)
 	return (true);
 }
 
-bool	is_death(t_philosopher *philo)
+bool	is_death(t_philo *philo)
 {
 	unsigned int	i;
 	unsigned int	new_time;
 
 	i = 0;
-	while (i < philo->params->philos_num)
+	while (i < philo->args.philos_num)
 		{
 			new_time = time_diff(philo[i].last_meal_time); // calculamos el tiempo transcurrido desde la ultima comida
-			if (new_time >= philo[i].params->time_to_die)
+			if (new_time >= philo[i].args.time_to_die)
 			{
 				philo[i].params->dead = true;
 				pthread_mutex_lock(philo[i].print_mutex);

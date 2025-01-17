@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers_threads.c                             :+:      :+:    :+:   */
+/*   threads_antiguo.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 11:49:39 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/10 14:49:24 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/17 13:35:05 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ unsigned int    get_time_diff_ms(unsigned int start_time) // para los prints
     return (get_current_time() - start_time);
 }
 
-bool    is_death(t_philosopher *philo, unsigned int action)
+bool    is_death(t_philo *philo, unsigned int action)
 {
     unsigned int time_diff;
     unsigned int action_time;
@@ -54,9 +54,9 @@ bool    is_death(t_philosopher *philo, unsigned int action)
 // En esta función falta añadir is_death
 void    *philosopher_routine(void *arg)
 {
-    t_philosopher	*philo;
+    t_philo	*philo;
 
-    philo = (t_philosopher *)arg;
+    philo = (t_philo *)arg;
     philo->last_meal_time = get_current_time_ms();
     philo->params->timestamp = get_current_time_ms();
     while (1) // bucle infinito con philo->meals como condicion de salida
@@ -87,7 +87,7 @@ void    *philosopher_routine(void *arg)
     return (NULL);
 }
 
-void    eating(t_philosopher *philo)
+void    eating(t_philo *philo)
 {
     philo->elapsed_time = get_time_diff_ms(philo->last_meal_time); // tiempo desde la ultima comida
     if (is_death(philo, EATING))
@@ -107,7 +107,7 @@ void    eating(t_philosopher *philo)
     philo->current_state = SLEEPING;
 }
 
-void    sleeping(t_philosopher *philo)
+void    sleeping(t_philo *philo)
 {
     philo->elapsed_time = get_time_diff_ms(philo->last_meal_time); // actualizamos el tiempo
     if(is_death(philo, SLEEPING)) // comprobamos si muere en mitad de la acción
@@ -119,7 +119,7 @@ void    sleeping(t_philosopher *philo)
     philo->current_state = THINKING;
 }
 
-void    thinking(t_philosopher *philo)
+void    thinking(t_philo *philo)
 {
     pthread_mutex_lock(philo->print_mutex);
     printf("time: %u id: %u is thinking\n", get_time_diff_ms(philo->params->timestamp), philo->id);
