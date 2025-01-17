@@ -118,20 +118,19 @@ unsigned int	current_time(void);
 unsigned int	time_diff(unsigned int time);
 
 // philosophers_malloc.c
-bool			malloc_philosophers_array(t_args *params, t_philo *philo);
+bool			malloc_philosophers_array(t_args *params, t_philo **philo);
 bool			malloc_threads(t_params *params, t_args *args, t_philo *philo);
 
 // philosophers_initialization.c
-bool			init_philos(t_params *params, t_args *args, t_philo *philo, int ac, char **av);
+bool			init_philos(t_params *params, t_args *args, t_philo **philo, int ac, char **av);
 bool			init_forks(t_params *params, t_args *args);
-bool			init_philo_struct(t_params *params, t_args *args, t_philo *philo);
+bool			init_philo_struct(t_params *params, t_args *args, t_philo **philo);
 
 // philosophers_monitor.c
 void			*monitor(void *arg);
 bool			meals_done(t_philo *philo);
 bool			is_death(t_philo *philo);
 
-// ---------------------- MAIN ---------------------- // habra que ponerlo en otro archivo, no en main
 // philosophers.c
 bool			start_routine(t_params *params, t_args *args, t_philo *philo);
 void			cleanup(t_params *params, t_args *args, t_philo *philo);

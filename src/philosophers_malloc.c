@@ -12,9 +12,9 @@
 
 #include "philosophers.h"
 
-bool    malloc_philosophers_array(t_args *args, t_philo *philo)
+bool    malloc_philosophers_array(t_args *args, t_philo **philo)
 {
-    philo = malloc(args->philos_num * sizeof(t_philo));
+    *philo = malloc(args->philos_num * sizeof(t_philo));
     if (!philo)
     {
         printf("Error: Failed to allocate memory for philosophers\n"); // revisar mensaje

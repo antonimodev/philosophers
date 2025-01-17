@@ -21,7 +21,7 @@ void    *routine(void *arg)
     philo->args.timestamp = philo->last_meal_time;
     while (1)
     {
-        //!philo->params->dead para hacer la comprobacion de si ha muerto o no
+        //philo->params->dead para hacer la comprobacion de si ha muerto o no
         if (philo->current_state == EATING)
         {
             if (philo->args.philos_num == 1)

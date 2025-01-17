@@ -23,7 +23,7 @@ int main(int ac, char **av)
     if (ac == 4 || ac == 5)
     {
         // -- ARGS -- //
-        if (!init_philos(&params, &args, philo, ac, av)) // INICIALIZA TODO
+        if (!init_philos(&params, &args, &philo, ac, av)) // INICIALIZA TODO
             return (2);
         if (!start_routine(&params, &args, philo))
             return (2);
@@ -33,7 +33,7 @@ int main(int ac, char **av)
     else
     {
         printf("Error: invalid number of arguments\n");
-        printf("Usage: %s number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n", av[-1]);
+        printf("Usage: 'number_of_philosophers' 'time_to_die' 'time_to_eat' 'time_to_sleep' '[number_of_times_each_philosopher_must_eat]'\n");
     }
     return (0);
 }
