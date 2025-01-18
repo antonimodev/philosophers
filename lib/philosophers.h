@@ -52,10 +52,11 @@ typedef struct s_args
 typedef struct s_params
 {
 	bool			dead; // NECESARIO PARA SABER SI HA MUERTO
-	pthread_t		monitor; // NECESARIO PARA CREAR EL HILO MONITOR - Pendiente
+	pthread_t		monitor; // NECESARIO PARA CREAR EL HILO MONITOR
 	pthread_t		*threads; // NECESARIO PARA CREAR LOS HILOS
 	pthread_mutex_t	*forks; // NECESARIO, ARRAY DE TENEDORES (MUTEX)
 	pthread_mutex_t	print_mutex; // NECESARIO PARA IMPRIMIR
+	pthread_mutex_t dead_mutex; // NECESARIO PARA CREAR EL MUTEX DE DEAD - Solo se usa en monitor de momento
 }	t_params;
 
 typedef struct s_philo
@@ -96,6 +97,7 @@ void			think(t_philo *philo);
 pthread_mutex_t	*create_forks(unsigned int num_philos);
 bool			init_mutex_array(pthread_mutex_t *forks, unsigned int philos_num);
 bool			init_print_mutex(pthread_mutex_t *mutex);
+bool			init_dead_mutex(pthread_mutex_t *mutex);
 void			destroy_mutex(t_params *params, t_args *args);
 
 // ---------------------- PARSE ---------------------- //

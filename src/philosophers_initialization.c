@@ -19,6 +19,7 @@ bool	init_philos(t_params *params, t_args *args, t_philo **philo, \
 	if (!init_args(args, ac, av) ||
 		!init_forks(params, args) || // tiene malloc
 		!init_print_mutex(&params->print_mutex) ||
+        !init_dead_mutex(&params->dead_mutex) || // Pendiente de usar
 		!init_philo_struct(params, args, philo)) // contiene philosophers_array y malloc_threads que tiene malloc
 		return (false);
 	return (true);

@@ -53,7 +53,9 @@ bool	is_death(t_philo *philo)
 			new_time = time_diff(philo[i].last_meal_time); // calculamos el tiempo transcurrido desde la ultima comida
 			if (new_time >= philo[i].args.time_to_die)
 			{
+				pthread_mutex_lock(&philo[i].params->dead_mutex); // lockeo de recurso muerte
 				philo[i].params->dead = true;
+				pthread_mutex_unlock(&philo[i].params->dead_mutex); // unlockeo de recurso muerte
 				pthread_mutex_lock(philo[i].print_mutex);
 				print_status(&philo[i], DEAD);
 				pthread_mutex_unlock(philo[i].print_mutex);

@@ -55,7 +55,17 @@ bool    init_print_mutex(pthread_mutex_t *mutex) // general pero inicializa prin
 {
     if (pthread_mutex_init(mutex, NULL) != 0)
     {
-        printf("Error: Failed to initialize mutex\n"); // revisar mensaje
+        printf("Error: Failed to initialize print mutex\n"); // revisar mensaje
+        return (false);
+    }
+    return (true);
+}
+
+bool    init_dead_mutex(pthread_mutex_t *mutex) // general pero inicializa print_mutex
+{
+    if (pthread_mutex_init(mutex, NULL) != 0)
+    {
+        printf("Error: Failed to initialize dead mutex\n"); // revisar mensaje
         return (false);
     }
     return (true);
