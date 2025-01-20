@@ -14,23 +14,25 @@
 
 void    print_status(t_philo *philo, unsigned int action)
 {
-    // Es posible que aquí podamos poner el pthread_mutex_lock
-    if (action == EATING)
-        printf(BOLD COLOR_GREEN "%ums %u is eating\n" COLOR_RESET,
-                time_diff(philo->args.timestamp), philo->id);
-    else if (action == SLEEPING)
-        printf("%ums %u is sleeping\n", 
-                time_diff(philo->args.timestamp), philo->id);
-    else if (action == THINKING)
-        printf("%ums %u is thinking\n", 
-                time_diff(philo->args.timestamp), philo->id);
-    else if (action == FORK)
-        printf("%ums %u has taken a fork\n", 
-                time_diff(philo->args.timestamp), philo->id);
-    else if (action == DEAD)
-        printf(COLOR_RED "%ums %u died\n" COLOR_RESET, 
-                time_diff(philo->args.timestamp), philo->id);
-    else if (action == FINISH)
-        printf(BOLD COLOR_BLUE "%ums  All philosophers have eaten %u times\n" COLOR_RESET, 
-                time_diff(philo->args.timestamp), philo->args.eat_times);
+    if (!dead_status(philo))
+    {
+        if (action == EATING)
+            printf(BOLD COLOR_GREEN "%u %u is eating\n" COLOR_RESET,
+                    time_diff(philo->args.timestamp), philo->id);
+        else if (action == SLEEPING)
+            printf("%u %u is sleeping\n", 
+                    time_diff(philo->args.timestamp), philo->id);
+        else if (action == THINKING)
+            printf("%u %u is thinking\n", 
+                    time_diff(philo->args.timestamp), philo->id);
+        else if (action == FORK)
+            printf("%u %u has taken a fork\n", 
+                    time_diff(philo->args.timestamp), philo->id);
+        else if (action == FINISH)
+            printf(BOLD COLOR_BLUE "%u  All philosophers have eaten %u times\n" COLOR_RESET, 
+                    time_diff(philo->args.timestamp), philo->args.eat_times);
+    }
+    if (action == DEAD)
+        printf(COLOR_RED "%u %u died\n" COLOR_RESET, 
+            time_diff(philo->args.timestamp), philo->id);
 }

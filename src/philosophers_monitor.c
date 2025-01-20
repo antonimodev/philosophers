@@ -51,7 +51,7 @@ bool	is_death(t_philo *philo)
 	while (i < philo->args.philos_num)
 		{
 			new_time = time_diff(philo[i].last_meal_time); // calculamos el tiempo transcurrido desde la ultima comida
-			if (new_time >= philo[i].args.time_to_die)
+			if (new_time >= philo[i].args.time_to_die + 2) // +2 para tener margen
 			{
 				pthread_mutex_lock(&philo[i].params->dead_mutex); // lockeo de recurso muerte
 				philo[i].params->dead = true;

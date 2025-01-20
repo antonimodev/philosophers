@@ -19,10 +19,8 @@ void    *routine(void *arg)
     philo = (t_philo *)arg;
     philo->last_meal_time = current_time();
     philo->args.timestamp = philo->last_meal_time;
-    while (1)
+    while (!dead_status(philo))
     {
-        //if philo->params->dead break ; para hacer la comprobacion de si ha muerto o no
-        //debemos lockear dead antes de acceder en cada comprobacion
         if (philo->current_state == EATING)
         {
             if (philo->args.philos_num == 1)
@@ -38,4 +36,16 @@ void    *routine(void *arg)
             thinking(philo);
     }
     return (NULL);
+}
+
+bool    dead_status(t_philo *philo)
+{
+    pthread_mutex_lock(&philo->params->dead_mutex);
+    if (philo->params->dead)
+    {
+        pthread_mutex_unlock(&philo->params->dead_mutex);
+        return (true);
+    }
+    pthread_mutex_unlock(&philo->params->dead_mutex);
+    return (false);
 }

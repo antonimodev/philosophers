@@ -114,6 +114,7 @@ unsigned int	*parse_values(int ac, char **av);
 // ---------------------- SRC ---------------------- //
 // philosophers_routine.c
 void			*routine(void *philo);
+bool			dead_status(t_philo *philo);
 
 // philosophers_time.c
 unsigned int	current_time(void);
