@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 13:24:37 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/17 14:40:20 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/20 14:43:55 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ bool	init_philos(t_params *params, t_args *args, t_philo **philo, \
 {
 	if (!init_args(args, ac, av) ||
 		!init_forks(params, args) || // tiene malloc
-		!init_print_mutex(&params->print_mutex) ||
-        !init_dead_mutex(&params->dead_mutex) || // Pendiente de usar
+		!init_individual_mutexes(params) ||
 		!init_philo_struct(params, args, philo)) // contiene philosophers_array y malloc_threads que tiene malloc
 		return (false);
 	return (true);
 }
+
 bool    init_forks(t_params *params, t_args *args)
 {
 	memset(params, 0, sizeof(t_params));

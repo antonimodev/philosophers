@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 11:49:39 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/17 14:24:29 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/20 13:57:58 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void    take_forks(t_philo *philo)
         pthread_mutex_lock(philo->right_fork);
         pthread_mutex_lock(philo->left_fork);
     }
-    else if (philo->id % 2 != 0)
+    else
     {
         pthread_mutex_lock(philo->left_fork);
         pthread_mutex_lock(philo->right_fork);
@@ -38,9 +38,11 @@ void    take_forks(t_philo *philo)
     pthread_mutex_unlock(philo->print_mutex);
 }
 
-void    eat(t_philo *philo)
+void eat(t_philo *philo)
 {
+    pthread_mutex_lock(&philo->params->last_meal_mutex);
     philo->last_meal_time = current_time();
+    pthread_mutex_unlock(&philo->params->last_meal_mutex);
     pthread_mutex_lock(philo->print_mutex);
     print_status(philo, EATING);
     pthread_mutex_unlock(philo->print_mutex);
@@ -54,7 +56,7 @@ void    drop_forks(t_philo *philo)
         pthread_mutex_unlock(philo->right_fork);
         pthread_mutex_unlock(philo->left_fork);
     }
-    else if (philo->id % 2 != 0)
+    else
     {
         pthread_mutex_unlock(philo->left_fork);
         pthread_mutex_unlock(philo->right_fork);
@@ -64,5 +66,9 @@ void    drop_forks(t_philo *philo)
 void meal_count(t_philo *philo)
 {
     if (philo->args.eat_times)
+    {
+        pthread_mutex_lock(&philo->params->meal_count_mutex);
         philo->meals++;
+        pthread_mutex_unlock(&philo->params->meal_count_mutex);
+    }
 }

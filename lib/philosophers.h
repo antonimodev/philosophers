@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 13:25:03 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/17 14:40:03 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/20 14:44:01 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ typedef struct s_params
 	pthread_t		*threads; // NECESARIO PARA CREAR LOS HILOS
 	pthread_mutex_t	*forks; // NECESARIO, ARRAY DE TENEDORES (MUTEX)
 	pthread_mutex_t	print_mutex; // NECESARIO PARA IMPRIMIR
+	pthread_mutex_t	last_meal_mutex; 
+	pthread_mutex_t	meal_count_mutex;
 	pthread_mutex_t dead_mutex; // NECESARIO PARA CREAR EL MUTEX DE DEAD - Solo se usa en monitor de momento
 }	t_params;
 
@@ -96,8 +98,8 @@ void			think(t_philo *philo);
 // philosophers_mutex.c
 pthread_mutex_t	*create_forks(unsigned int num_philos);
 bool			init_mutex_array(pthread_mutex_t *forks, unsigned int philos_num);
-bool			init_print_mutex(pthread_mutex_t *mutex);
-bool			init_dead_mutex(pthread_mutex_t *mutex);
+bool			init_individual_mutexes(t_params *params);
+bool			init_individual_mutex(pthread_mutex_t *mutex, char *msg);
 void			destroy_mutex(t_params *params, t_args *args);
 
 // ---------------------- PARSE ---------------------- //
@@ -138,5 +140,10 @@ bool			is_death(t_philo *philo);
 bool			start_routine(t_params *params, t_args *args, t_philo *philo);
 void			cleanup(t_params *params, t_args *args, t_philo *philo);
 void			wait_threads(t_params *params, t_args *args);
+
+
+// NO WHERE
+
+bool    philo_exception(t_philo *philo);
 
 #endif
