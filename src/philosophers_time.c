@@ -1,26 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers_threads.c                             :+:      :+:    :+:   */
+/*   philosophers_time.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 11:49:39 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/10 14:49:24 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/21 12:45:27 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-unsigned int    current_time(void)
+unsigned int	current_time(void)
 {
-    struct timeval current_time;
+	struct timeval	current_time;
 
-    gettimeofday(&current_time, NULL);
-    return (current_time.tv_sec * 1000 + current_time.tv_usec / 1000);
+	gettimeofday(&current_time, NULL);
+	return (current_time.tv_sec * 1000 + current_time.tv_usec / 1000);
 }
 
-unsigned int    time_diff(unsigned int time)
+unsigned int	time_diff(unsigned int time)
 {
-    return (current_time() - time);
+	return (current_time() - time);
 }
