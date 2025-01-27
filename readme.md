@@ -41,5 +41,5 @@ El programa debe aceptar los siguientes argumentos:
 [timestamp_in_ms] [philosopher_id] ha muerto
 ```
 ### Ejemplo en terminal
-![Philosophers alive](https://github.com/antonimodev/philosophers/img/philo_alive.png)
-![Philosophers dead](https://github.com/antonimodev/philosophers/img/philo_dead.png)
+<img src="https://github.com/antonimodev/philosophers/blob/main/img/philos_alive.png" alt="Philosophers alive" width="400"/>
+<img src="https://github.com/antonimodev/philosophers/blob/main/img/philos_died.png" alt="Philosophers dead" width="400"/>
