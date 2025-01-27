@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 11:49:39 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/21 13:13:33 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/27 11:27:20 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,10 @@ void	set_start_routine(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->params->last_meal_mutex);
 	philo->last_meal_time = current_time();
-	philo->args.timestamp = philo->last_meal_time;
 	pthread_mutex_unlock(&philo->params->last_meal_mutex);
+	pthread_mutex_lock(&philo->params->timestamp_mutex);
+	philo->params->timestamp = philo->last_meal_time;
+	pthread_mutex_unlock(&philo->params->timestamp_mutex);
 	if (philo->id % 2 != 0)
 		usleep(300);
 }

@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 11:49:39 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/21 12:51:22 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/27 11:00:35 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void	thinking(t_philo *philo)
 {
 	think(philo);
-	usleep(1000);
 	philo->current_state = EATING;
 }
 

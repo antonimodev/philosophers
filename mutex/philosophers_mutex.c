@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 11:49:39 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/21 13:30:34 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/27 11:26:09 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ bool	init_individual_mutexes(t_params *params)
 	if (!init_individual_mutex(&params->print_mutex, "print")
 		|| !init_individual_mutex(&params->last_meal_mutex, "last meal")
 		|| !init_individual_mutex(&params->meal_count_mutex, "meal count")
-		|| !init_individual_mutex(&params->dead_mutex, "dead"))
+		|| !init_individual_mutex(&params->dead_mutex, "dead")
+		|| !init_individual_mutex(&params->timestamp_mutex, "timestamp"))
 		return (false);
 	return (true);
 }

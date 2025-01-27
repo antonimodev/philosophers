@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 13:25:03 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/21 13:43:38 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/27 11:28:22 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ typedef struct s_args
 	unsigned int	time_to_eat;
 	unsigned int	time_to_sleep;
 	unsigned int	time_to_die;
-	unsigned int	timestamp;
 	unsigned int	eat_times;
 }					t_args;
 
@@ -65,7 +64,9 @@ typedef struct s_params
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	last_meal_mutex;
 	pthread_mutex_t	meal_count_mutex;
+	pthread_mutex_t	timestamp_mutex;
 	pthread_mutex_t	dead_mutex;
+	unsigned int	timestamp;
 }					t_params;
 
 typedef struct s_philo
@@ -84,6 +85,7 @@ typedef struct s_philo
 // ---------------------- ACTIONS ---------------------- //
 // philosophers_actions_utils.c
 void				print_status(t_philo *philo, unsigned int action);
+unsigned int		get_timestamp(t_philo *philo);
 
 // philosophers_eat.c
 void				eating(t_philo *philo);

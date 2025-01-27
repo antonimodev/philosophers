@@ -6,7 +6,7 @@
 /*   By: antonimo <antonimo@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 13:18:53 by antonimo          #+#    #+#             */
-/*   Updated: 2025/01/21 13:36:35 by antonimo         ###   ########.fr       */
+/*   Updated: 2025/01/23 11:00:20 by antonimo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ unsigned int	*parse_values(int ac, char **av)
 		if (!values[i])
 		{
 			printf("Error: parse_values: Values cannot be 0\n");
-			free(values);
 			memset(values, 0, ac * sizeof(unsigned int));
 			return (values);
 		}
